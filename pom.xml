@@ -40,6 +40,12 @@
 			<artifactId>jersey-container-jetty-servlet</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -53,6 +59,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -80,8 +87,8 @@
 							<mainClass>com.vmutter.jettyjersey.app.Main</mainClass>
 						</manifest>
 					</archive>
-
 				</configuration>
+
 				<executions>
 					<execution>
 						<id>make-assembly</id>
