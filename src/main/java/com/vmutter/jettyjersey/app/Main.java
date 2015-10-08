@@ -3,21 +3,24 @@ package com.vmutter.jettyjersey.app;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		context.setContextPath("/");
+		ResourceConfig config = new ResourceConfig();
+		config.register(RolesAllowedDynamicFeature.class);
+        config.packages("com.vmutter.jettyjersey.rs");
 
-		Server jettyServer = new Server(8080);
-		jettyServer.setHandler(context);
+        ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(config));
+        jerseyServlet.setInitOrder(0);
 
-		ServletHolder jerseyServlet = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
-		jerseyServlet.setInitOrder(0);
+        Server jettyServer = new Server(8080);
+        ServletContextHandler context = new ServletContextHandler(jettyServer, "/");
 
-		// Tells the Jersey Servlet which REST service/class to load.
-		jerseyServlet.setInitParameter("jersey.config.server.provider.packages", "com.vmutter.jettyjersey.rs");
+        context.addServlet(jerseyServlet, "/rs/*");
 
 		try {
 			jettyServer.start();
@@ -26,5 +29,4 @@ public class Main {
 			jettyServer.destroy();
 		}
 	}
-
 }
